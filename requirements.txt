@@ -1,0 +1,31 @@
+# Python dependencies yang dibutuhkan beberapa skill Hermes
+# Install via: pip install -r requirements.txt  (atau uv pip install -r requirements.txt)
+#
+# NOTE: Sebagian besar skill adalah prosedur/instructions (tanpa dependency).
+# Dependency di bawah untuk skill yang butuh library Python.
+
+# Productivity / PDF
+pymupdf>=1.24.0            # ocr-and-documents, scanned-document-reading
+python-docx>=1.1.0         # docx
+openpyxl>=3.1.0            # xlsx
+python-pptx>=0.6.23        # powerpoint
+
+# Finance / Market Report
+pandas>=2.2.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0     # scraping
+lxml>=5.0.0
+
+# SEO
+bs4>=0.0.1                 # alias beautifulsoup4
+
+# Media / Audio
+pydub>=0.25.1              # songsee (audio analysis)
+numpy>=1.26.0              # songsee / science umum
+
+# Science / Data
+scipy>=1.11.0
+matplotlib>=3.8.0
+
+# DevOps
+pyyaml>=6.0.0              # config parsing

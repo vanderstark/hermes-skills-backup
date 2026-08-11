@@ -1,0 +1,38 @@
+# Gitignore untuk hermes-skills-backup
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+*.p12
+
+# Backup artifacts (jangan commit)
+*.bak-*
+*.bak
+*.old
+
+# Large binaries
+*.mp4
+*.mp3
+*.tar.gz
+*.zip
+*.gz
+
+# System
+.DS_Store
+Thumbs.db
+*.swp
+*.log
+
+# Temp
+/tmp/

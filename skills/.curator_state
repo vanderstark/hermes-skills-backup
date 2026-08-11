@@ -1,0 +1,9 @@
+{
+  "last_report_path": "/opt/data/logs/curator/20260808-170131",
+  "last_run_at": "2026-08-08T17:01:31.890084+00:00",
+  "last_run_duration_seconds": 24.827162,
+  "last_run_summary": "auto: no changes; llm: skipped (consolidation off)",
+  "last_run_summary_shown_at": null,
+  "paused": false,
+  "run_count": 1
+}

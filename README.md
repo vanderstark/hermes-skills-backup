@@ -1,0 +1,118 @@
+# 🔄 Hermes Skills & Plugins Backup — Restore Sekali Panggil
+
+> **Satu repo GitHub = seluruh skill, plugin, dan konfigurasi Hermes Bos.**
+> Install ulang Hermes? Cukup clone repo ini & jalankan `install.sh` — semua kembali tanpa ribet mencari link satu per satu.
+
+---
+
+## 🚀 Cara Restore (Setelah Install Hermes Baru)
+
+### Cara 1 — Langsung dari GitHub (paling mudah)
+
+```bash
+git clone https://github.com/vanderstark/hermes-skills-backup.git
+cd hermes-skills-backup
+bash install.sh --from-github
+```
+
+### Cara 2 — Dari folder lokal
+
+```bash
+bash install.sh
+```
+
+### Opsi tambahan
+
+| Flag | Fungsi |
+|---|---|
+| `--from-github` | Clone langsung dari GitHub lalu restore |
+| `--skill-only` | Restore skill saja (skip plugins) |
+| `--dry-run` | Simulasi — cek apa yang akan di-restore tanpa menulis |
+
+---
+
+## 📦 Isi Repo
+
+```
+hermes-skills-backup/
+├── install.sh          ← 🚀 script restore otomatis (sekali jalan)
+├── README.md           ← ← dokumen ini
+├── AGENTS.md           ← project rules + aktivasi Task Observer
+└── skills/             ← 📁 SEMUA skill (1884 SKILL.md, 114MB)
+    ├── autonomous-ai-agents/
+    ├── creative/
+    ├── finance/
+    ├── productivity/
+    ├── science/
+    ├── security/
+    ├── software-development/
+    └── ... (23 kategori)
+└── plugins/            ← 📁 SEMUA plugin (74 file, 716KB)
+```
+
+---
+
+## 🧠 Cara Kerja `install.sh`
+
+1. **Deteksi** `HERMES_HOME` (default `~/`)
+2. **Restore** `skills/` → `$HERMES_HOME/skills/`
+3. **Restore** `plugins/` → `$HERMES_HOME/plugins/`
+4. **Restore** `AGENTS.md` → `$HERMES_HOME/AGENTS.md` (aktivasi Task Observer)
+5. **Backup otomatis** folder existing → `*.bak-<timestamp>` sebelum ditimpa
+6. **Verifikasi** jumlah SKILL.md & file plugin
+
+> ⚠️ Folder yang sudah ada **tidak dihapus** — di-backup dulu dengan nama `skills.bak-<tanggal>`. Aman.
+
+---
+
+## 🤔 Kenapa Repo Ini Ada?
+
+Bos tidak ingin **ribet mencari link skill satu per satu** saat install ulang Hermes. Dengan repo ini:
+
+- ✅ **1 repo = semua skill + plugin + rules**
+- ✅ **1 perintah** = restore lengkap
+- ✅ Task Observer, custom skills (rocketpy, scrapegraph-ai, dsb), dan semua bundled skill tersimpan
+- ✅ Tanpa `.venv` / video / file besar → efisien (34MB terkompresi)
+
+---
+
+## 🔄 Update Backup (Saat Ada Skill Baru)
+
+Setelah Hermes menambah/mengubah skill, update repo:
+
+```bash
+# Dari folder repo backup:
+rsync -a --exclude='.venv' --exclude='.git' --exclude='__pycache__' \
+  --exclude='.curator_backups' --exclude='*.mp4' --exclude='*.tar.gz' \
+  /opt/data/skills/ skills/
+cp /opt/data/AGENTS.md AGENTS.md
+git add -A
+git commit -m "update: sinkronisasi skill $(date +%F)"
+git push
+```
+
+---
+
+## ❓ FAQ
+
+**Q: Apa bedanya dengan `hermes skills install`?**
+A: `hermes skills install` butuh link per repo. Repo ini **satu untuk semua** — tinggal restore, semua langsung aktif.
+
+**Q: Apakah .venv ikut?**
+A: **Tidak.** Python environment (`.venv`) dibuat ulang via `uv` — restore hanya file skill/prosedur, bukan binary.
+
+**Q: Apakah ada secret/token di repo ini?**
+A: **Tidak.** Semua `.env`, `.pem`, `.key` di-exclude. Skill berisi prosedur & instruksi, bukan kredensial.
+
+**Q: Ukuran repo gede nggak?**
+A: Skills ~114MB (34MB terkompresi) — nyaman untuk GitHub (limit file 100MB, repo recommend <1GB).
+
+---
+
+## 📋 Lisensi & Atribusi
+
+- Skills adalah konten open-source milik komunitas (masing-masing punya lisensi sendiri, mis. Task Observer CC BY 4.0)
+- Repo ini hanya **backup pribadi** pengguna vanderstark — bukan redistribusi komersial
+- Attribusi tetap milik masing-masing author skill
+
+Dibuat dengan ❤️ oleh Hermes untuk Bos. 🙏

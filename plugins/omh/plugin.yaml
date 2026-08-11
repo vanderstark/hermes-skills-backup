@@ -1,0 +1,13 @@
+name: omh
+version: "0.1.0"
+description: "Oh My Hermes — infrastructure layer for OMH skills (state management, evidence gathering, mode awareness)"
+author: Donald Thompson
+
+provides_tools:
+  - omh_state
+  - omh_gather_evidence
+
+provides_hooks:
+  - pre_llm_call
+  - on_session_end
+  - pre_tool_call
