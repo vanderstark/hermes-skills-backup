@@ -18,6 +18,7 @@ FROM_GITHUB=0
 SKILL_ONLY=0
 DRY_RUN=0
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TMP_DIR=""
 
 # ── Parse argumen ──────────────────────────────────────────────
 for arg in "$@"; do
