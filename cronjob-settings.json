@@ -1,0 +1,68 @@
+[
+  {
+    "job_id": "424a9eaa0d37",
+    "name": "Analisa Saham IDX, US & Crypto - Pagi",
+    "schedule": "0 8 * * *",
+    "deliver": "origin",
+    "script": "market_report_from_cache.sh",
+    "skills": ["stock-analysis"],
+    "enabled": true,
+    "model": "hermes",
+    "provider": "custom"
+  },
+  {
+    "job_id": "ee88975eeb0a",
+    "name": "Analisa Saham IDX, US & Crypto - Siang",
+    "schedule": "0 12 * * *",
+    "deliver": "origin",
+    "script": "market_report_from_cache.sh",
+    "enabled": true,
+    "no_agent": true
+  },
+  {
+    "job_id": "ea6cc26cc7a5",
+    "name": "Analisa Saham IDX, US & Crypto - Sore",
+    "schedule": "45 15 * * *",
+    "deliver": "origin",
+    "script": "market_report_from_cache.sh",
+    "skills": ["stock-analysis"],
+    "enabled": true,
+    "model": "hermes",
+    "provider": "custom"
+  },
+  {
+    "job_id": "e65f96616df9",
+    "name": "market-cache-build-nightly",
+    "schedule": "0 2 * * *",
+    "deliver": "local",
+    "script": "market_cache_build.sh",
+    "enabled": true,
+    "no_agent": true
+  },
+  {
+    "job_id": "a2a47181ab20",
+    "name": "market-cache-build-afternoon",
+    "schedule": "0 15 * * *",
+    "deliver": "local",
+    "script": "market_cache_build.sh",
+    "enabled": true,
+    "no_agent": true
+  },
+  {
+    "job_id": "1163ae6f2b4a",
+    "name": "market-cache-build-noon",
+    "schedule": "0 11 * * *",
+    "deliver": "local",
+    "script": "market_cache_build.sh",
+    "enabled": true,
+    "no_agent": true
+  },
+  {
+    "job_id": "4cd01fb62d84",
+    "name": "weekly-skill-review-task-observer",
+    "schedule": "0 9 * * 1",
+    "deliver": "origin",
+    "skills": ["task-observer"],
+    "enabled": true
+  }
+]
