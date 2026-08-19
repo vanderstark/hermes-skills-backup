@@ -1,0 +1,28 @@
+name: Auto Push Skills
+
+on:
+  push:
+    paths:
+      - 'skills/**'
+      - 'README.md'
+  workflow_dispatch:
+
+jobs:
+  verify-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Verify Skill Structure
+        run: |
+          echo "Checking skill directories..."
+          find skills -name "SKILL.md" -exec echo "Found: {}" \;
+
+      - name: Auto commit changes (if any)
+        run: |
+          git config user.name "vanderstark"
+          git config user.email "vanderstark@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "Auto-sync: $(date +'%Y-%m-%d %H:%M:%S')"
+          git push
