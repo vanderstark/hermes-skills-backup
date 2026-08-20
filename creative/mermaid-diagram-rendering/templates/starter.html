@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- PROVEN template for crisp Mermaid diagram rendering (light theme, 22px fonts).
+     One diagram per file. Verified working in e-HANJAR AKPOL session 2026-08.
+     To render: browser_navigate file://... wait 3-4s, verify via browser_console,
+     then browser_vision to screenshot. -->
+<html><head><meta charset="UTF-8">
+<meta name="viewport" content="width=2800, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  body{margin:0;padding:0;background:#ffffff;font-family:'Segoe UI',system-ui,sans-serif;}
+  .mermaid { font-size:22px; text-align:center; }
+</style></head><body>
+<pre class="mermaid">
+flowchart TD
+    A["User Request"] --> B{"Allow?"}
+    B -->|YES| C["Pass"]
+    B -->|NO| D["Block + Log"]
+</pre>
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'default',
+  securityLevel: 'loose',
+  flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis', padding: 12 },
+  themeVariables: {
+    fontSize: '22px',
+    fontFamily: 'Segoe UI, system-ui, sans-serif',
+    primaryColor: '#e0e7ff',
+    primaryTextColor: '#111827',
+    primaryBorderColor: '#4f46e5',
+    lineColor: '#374151',
+    secondaryColor: '#dcfce7',
+    tertiaryColor: '#fef3c7'
+  }
+});
+</script>
+</body></html>
