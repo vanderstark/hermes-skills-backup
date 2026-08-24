@@ -52,13 +52,21 @@ hermes-skills-backup/
 
 ---
 
-## 🧠 Cara Kerja `install.sh`
+55|## 🧠 Cara Kerja `install.sh`
+56|
+57|1. **Deteksi** `HERMES_HOME` (default `~/`)
+58|2. **Restore** `skills/` → `$HERMES_HOME/skills/`
+59|3. **Restore** `plugins/` → `$HERMES_HOME/plugins/`
+60|4. **Restore** `AGENTS.md` → `$HERMES_HOME/AGENTS.md` (aktivasi Task Observer)
+61|
+62|---
+63|
+64|## 📝 Skill Terbaru Ditambahkan (24 Agustus 2026)
+65|
+66|- **Research & AI LabOps (OSINT & R&D)**
+67|- **Machine Learning Ops (MLOps) GPU Server**
+68|
 
-1. **Deteksi** `HERMES_HOME` (default `~/`)
-2. **Restore** `skills/` → `$HERMES_HOME/skills/`
-3. **Restore** `plugins/` → `$HERMES_HOME/plugins/`
-4. **Restore** `AGENTS.md` → `$HERMES_HOME/AGENTS.md` (aktivasi Task Observer)
-5. **Backup otomatis** folder existing → `*.bak-<timestamp>` sebelum ditimpa
 6. **Verifikasi** jumlah SKILL.md & file plugin
 
 > ⚠️ Folder yang sudah ada **tidak dihapus** — di-backup dulu dengan nama `skills.bak-<tanggal>`. Aman.
