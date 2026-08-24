@@ -29,6 +29,16 @@ exists. Without filesystem access, check the system prompt / project
 instructions and suggest the user add the instruction there. Keep the
 suggestion to a sentence or two.
 
+**⚠️ Hermes Agent note:** Hermes reads activation instructions from AGENTS.md
+(or CLAUDE.md) only in the **current working directory** (`cwd` of the session
+root), never from subdirectories or project folders. If integrating
+task-observer into Hermes, always write the activation instruction to the
+session's cwd-level config file, not to a project-local CLAUDE.md. Verify
+placement by checking what the hermes-agent skill's references/project-context-files.md
+specifies for your Hermes version (discovery order: .hermes.md > AGENTS.md > CLAUDE.md,
+cwd-only). Activation instructions written to non-cwd locations will not load
+and the skill will not trigger automatically between sessions.
+
 **Anti-pattern:** don't chain activation through another skill — load
 task-observer and related skills independently from configuration; a broken
 chain silences all observation activity.

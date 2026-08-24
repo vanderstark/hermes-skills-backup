@@ -19,6 +19,27 @@ language version"), and (2) publishing each variant — either as
 subfolders in one repo, or as N separate one-repo-per-variant GitHub
 repos — reliably at scale (10-25+ variants in one pass).
 
+## User Preference Integration (from user "Bos" / Eko)
+
+Four hard conventions learned — always enforce in **every** generated repo + script:
+
+### 1. No "ccc" prefix in repo names or filenames
+User explicitly asked to **remove the "ccc" prefix** from all repo names and any config/file references (e.g. `ccc-le-ssl.conf` → `app-le-ssl.conf`, `ccc.yourdomain.com` → `app.yourdomain.com`). Corrected twice — firm preference. The **only** permitted use of "ccc" is as a reference to the user's **actual app repo names** (`ccc-laravel-docker`, `ccc-laravel-monolith`) — never as a prefix/label in the *new* deliverable repo.
+
+### 2. Reference to `anthropics/claude-plugins-official` in every repo
+Every tutorial repo's `README.md` **must** include a reference to `https://github.com/anthropics/claude-plugins-official` under a `## 🔗 Referensi` section. This was requested explicitly and is the user's standard template. Enforce in the generator's `readme_for(...)` function — do not rely on memory.
+
+### 3. Token hygiene for bulk pushes
+- Do NOT echo the GitHub PAT to stdout or write it to disk unencrypted.
+- After `git push` with token in remote URL, immediately **sanitize the remote URL** to the non-token form (`https://github.com/org/repo.git`) so the token can't leak from `.git/config`.
+- Print a reminder to **revoke the token** at the end of every session that used a PAT in chat.
+- Never store PAT in `memory` tool — it's a credential that must be re-derived each session.
+
+### 4. Dual tutorial format
+Every deliverable repo **must** contain both:
+- A manual step-by-step (`TUTORIAL.md` / `TUTORIAL_SSL.md`) — no script dependency, walk through each command.
+- An automated script (`scripts/setup-*.sh` with `bash -n` passing) — for the "just make it work" path.
+
 ## When to use this skill
 
 - User asks for "all combinations of X and Y" as deployable

@@ -146,6 +146,46 @@ whether it actually sent:
    re-running the job; offer to re-run only if they still want the content
    surfaced again, not as an automatic recovery action.
 
+## User reports "Telegram macet" (bot seems stuck/unresponsive)
+
+Don't jump to a gateway restart first — it kills any in-flight work. Diagnose in
+this order:
+
+1. Confirm the gateway process itself is alive and its uptime is sane:
+   `ps aux | grep "hermes gateway run"` — a multi-day uptime with no recent crash
+   means the *process* is fine; the "macet" symptom is almost always inside a
+   single Telegram session, not the gateway.
+2. `tail -n 100 /opt/data/logs/gateway.log` (NOT agent.log for this triage —
+   gateway.log has the platform-level connect/disconnect/error events).
+   Two independent things can produce the same user-visible symptom and often
+   overlap in the same window — check for both:
+   - **Transient network flakiness to Telegram's API**: repeating lines like
+     `Primary api.telegram.org connection failed`, `trying fallback IPs
+     149.154.166.110`, `Telegram polling degraded`, or `Conflict: terminated by
+     other getUpdates request`. These are self-healing — the adapter retries and
+     reconnects on its own (watch for `Telegram polling restarted after network
+     error` / `✓ telegram connected` shortly after). Do not restart the gateway
+     for this alone; it's noise, not an outage.
+   - **A genuinely heavy in-flight request**: grep for the user's most recent
+     `inbound message:` line with no matching `response ready:` after it yet.
+     Cross-reference the message text — asks like "build a cache for 900+
+     stocks", "analyze all IDX", or repeated "lanjutkan" after a `/stop` are
+     legitimately slow (observed: 200–650s response times are normal for
+     multi-hundred-symbol market analysis with many tool calls). This is not a
+     bug; it's the user's own request still being processed.
+3. Only recommend/perform a gateway restart if BOTH: (a) no `inbound message`
+   has been answered in a long time AND (b) the gateway.log shows no recent
+   activity at all (not even reconnect attempts) — i.e. it's actually wedged,
+   not just slow. Restarting always cancels in-flight work, so surface that
+   tradeoff to the user explicitly before doing it (offer restart as one of
+   several options, don't do it unilaterally) — see the "Restarting the
+   gateway — MUST be from outside this session" section above for the actual
+   restart mechanics.
+4. If the slow request is a big batch job the user asked for (e.g. build a
+   market-data cache for hundreds of symbols), suggest scoping it down
+   (smaller batch first) as a mitigation rather than just waiting or
+   restarting — it avoids the same "looks stuck" symptom recurring.
+
 ## Adding MCP servers on this deployment (`hermes mcp add`)
 
 The `hermes` wrapper at `/opt/hermes/hermes` can fail to even start with

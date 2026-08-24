@@ -56,6 +56,10 @@ Reply in **Bahasa Indonesia**, hormat tone, address as "Bos", exactly 3x 🙏�
 - Power: NUT + kWh meter Modbus (Eastron SDM630) + PDU SNMP → Telegraf → InfluxDB → Grafana.
 - Backbone: Zabbix (SNMP/IPMI/BMC), Netdata (per-host realtime), Pulse (Proxmox/PBS AI patrol),
   Prometheus + Grafana.
+- **Centralized Logging**: Loki + Promtail (pull) — 2 repo split:
+  - `vanderstark/loki-logging-docker` — Docker Compose (Loki + Promtail + Grafana), script `setup-loki.sh`, bulk agent deploy via `deploy-bulk.sh servers.txt`.
+  - `vanderstark/loki-logging-monolith` — Native binary (no Docker), systemd units, same agent deploy pattern.
+  - Agent pattern: Promtail agent installed via SSH on each target server (170 servers), ships logs to central Loki. Both repos include `servers.txt.example` template.
 - DCIM/IPAM: **NetBox** (rack U, cable map, IP/VLAN, power per PDU — push this one), alt:
   RackTables / OpenDCIM / phpIPAM.
 - Network: LibreNMS / Observium, The Dude, OpenNMS. Automation: Ansible + Terraform + ipmitool.
@@ -63,6 +67,12 @@ Reply in **Bahasa Indonesia**, hormat tone, address as "Bos", exactly 3x 🙏�
 - NAS alternatives to recommend: OpenMediaVault (Debian, ringan), Unraid (bayar, mix disk), Proxmox VE
   (virtualisasi + storage), PBS (backup target VM/CT), MinIO (S3 object), Cockpit+ZFS (replicate = metode B).
 - TrueNAS clones/alternatives comparison table lives in `references/truenas-nas.md`.
+
+## Agent deployment patterns (for all monitoring stacks)
+- **Prometheus (pull)**: Node Exporter agent on each target → scrape config via `file_sd_configs` or static targets. Scripts: `deploy-agent.sh` + `install-agent.sh` + `servers.txt.example`.
+- **Uptime Kuma (push)**: Pushbeat agent (curl loop) on each target → HTTP heartbeat to Uptime Kuma Push API. Each server needs unique Push URL (1 monitor per server). Scripts: `install-agent.sh` + `deploy-bulk.sh`.
+- **Loki (push)**: Promtail agent on each target → HTTP push to Loki `/loki/api/v1/push`. Scripts: `deploy-bulk.sh` + `install-agent.sh` (Docker or native binary).
+- All stacks: `servers.txt.example` template, bulk deploy scripts, SSH root key-based auth required.
 
 ## Pitfalls
 - RAID6 with 3 disks: state the constraint upfront, give valid alternatives immediately.

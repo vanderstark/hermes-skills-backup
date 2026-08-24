@@ -14,6 +14,18 @@ general — resolve via `$HERMES_HOME`, don't hardcode). "Installing" a GitHub
 skill repo is just: clone it, find the SKILL.md files, copy those directories
 into place, verify. No build step, no restart needed.
 
+> **Disambiguation — "install skill X" ALWAYS means install into the Hermes
+> skill library locally.** It does NOT mean "add the repo URL as a reference
+> link in another project's README." These are opposite operations: one copies
+> the skill content into `$HERMES_HOME/skills/<category>/`, the other merely
+> mentions the repo in prose. When the user says "install <repo> ke hermes",
+> they want the local-library operation. Getting this wrong (e.g. adding a
+> reference link to unrelated SSL tutorial repos when the user asked to install
+> `anthropics/claude-plugins-official`) draws an explicit correction ("salah
+> kamu") and wastes a full push cycle on repos that shouldn't have changed.
+> If the user's intent is genuinely ambiguous (they said "masukkan URL ini"),
+> clarify — but never default to editing unrelated repos' READMEs.
+
 ## Procedure
 
 1. **Clone shallow** to `/tmp` (not into the skills dir directly — inspect
@@ -49,7 +61,14 @@ into place, verify. No build step, no restart needed.
    /tmp clone being deleted.
 5. **Clean up** the /tmp clone once copied (`rm -rf /tmp/<repo>`).
 6. **Verify** with `skills_list(category=...)` — confirm the count matches
-   the number of SKILL.md files found in step 2.
+   the number of SKILL.md files found in step 2. If the count is LOWER than
+   the on-disk file count, see "Repos where multiple skills share the same
+   frontmatter `name:`" below — the loader dedupes by frontmatter name.
+7. **If the user maintains a backup repo of the skill library** (this user:
+   `vanderstark/hermes-skills-backup`), sync every newly installed category
+   there so the backup stays current: `cp -r` the category into the backup
+   clone, commit (`feat: tambah N skill <source>`), push with the PAT, and
+   reset the remote URL back to tokenless immediately after.
 
 ## Zero-SKILL.md repos
 
@@ -366,7 +385,39 @@ not just Bun.
   put all the rich detail (trigger phrases, scope, related skills) in the SKILL.md body, not
   the description. This bites hardest when porting a verbose upstream `description:` verbatim
   from a source repo — always rewrite it short, don't copy-paste.
-- **Don't confuse "install the skill" with "install the underlying tool".**
+- **Repos where multiple skills share the same frontmatter `name:`** —
+  multi-plugin repos (e.g. `anthropics/claude-plugins-official`) ship
+  separate skill directories whose `SKILL.md` frontmatter `name:` field is
+  identical: `discord-access`, `imessage-access`, `telegram-access` all have
+  `name: access`; the `*-configure` trio all have `name: configure`. Hermes's
+  skill loader dedupes by the `name:` field, so only one of the set appears
+  in `skills_list()` and `skill_view(name='access')` shows the first match,
+  silently ignoring the rest. **Fix:** after copying, rewrite each skill's
+  frontmatter `name:` to match its (unique) directory name:
+  ```bash
+  for d in discord-access imessage-access telegram-access; do
+    sed -i "1s/name:.*/name: $d/" /opt/data/skills/anthropic-plugins/$d/SKILL.md
+  done
+  ```
+  Then re-run `skills_list(category=...)` — all skills appear. Content is
+  unchanged; this only aligns the loader key with the on-disk identity.
+  Detect the mismatch up front with a folder-vs-frontmatter sweep (`grep -m1
+  '^name:'` per dir) and always compare `skills_list` count against the
+  `find -iname SKILL.md | wc -l` count.
+- **User-maintained skill backup repo** (this user: `vanderstark/hermes-skills-backup`):
+  after installing a new category (or batch of skills from one repo), sync
+  the newly-installed category into the backup clone, commit, and push with
+  the PAT. This keeps the backup current and avoids drift. The pattern is:
+  ```bash
+  cp -r /opt/data/skills/<new-category> /path/to/hermes-skills-backup/
+  cd /path/to/hermes-skills-backup
+  git add <new-category>
+  git commit -m "feat: tambah N skill <source>"
+  git push origin main
+  ```
+  Do this as the LAST step of the install workflow so the backup always
+  reflects what's actually active in Hermes.
+- Don't confuse "install the skill" with "install the underlying tool".
   Some repos (e.g. memory-compression or automation plugins) ship
   SKILL.md files that *reference* a database, MCP server, or npm package
   the skill assumes is running. Copying the SKILL.md alone does not wire

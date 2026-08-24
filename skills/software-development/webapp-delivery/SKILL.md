@@ -195,7 +195,16 @@ but only if prepared beforehand. Proven pattern from `vanderstark/crisis-command
   pushes makes verification (`git log` vs GitHub API) trivial. Check
   `git status --short` on both before push.
 
-## README (tutorial) standards — user expects ALL of these
+## SSL/HTTPS (Laravel Nginx monolith)
+
+When shipping a Laravel monolith to production with Nginx + Let's Encrypt,
+the proven pattern is: `apt install nginx python3-certbot-nginx` then
+`certbot --nginx -d domain.com --redirect`. Certbot creates the 443 block +
+redirect automatically — do NOT hand-write a `listen 443 ssl` server (no cert
+files yet → `nginx -t` fails) or a manual `return 301` on port 80 (breaks the
+HTTP-01 `/.well-known/acme-challenge/` path). Auto-renewal: `systemctl
+enable certbot.timer`. See `references/nginx-certbot-letsencrypt.md` for the
+full recipe and common pitfalls.
 
 - Indonesian (Bahasa), full TOC, BOTH install paths (Docker = primary, venv =
   dev), "Cara Pakai" with 2-3 concrete named scenarios, project structure tree,
@@ -222,6 +231,13 @@ but only if prepared beforehand. Proven pattern from `vanderstark/crisis-command
   questions or Phase 2 ML work. Now covers the full 26-bencana+5-operasi set:
   generic severity model, tsunami wave-height tiers, volcano VEI 0-8 table,
   forest-fire area×fuel×wind, kebakaran/wabah/sosial decision templates.
+- `references/nginx-certbot-letsencrypt.md` — full nginx + certbot + Let's
+  Encrypt recipe for a Laravel monolith (vhost config, pitfalls, auto-renewal,
+  verification commands). Use whenever shipping a "CCC SSL Tutorial" repo or
+  any monolith needing native HTTPS.
+- `templates/ccc-tutorial-file-structure.md` — file layout + content
+  checklist for CCC (Akademi Kepolisian) SSL tutorial repos (README.md,
+  TUTORIAL_SSL.md, scripts/setup-ssl.sh), covering Nginx/Apache/Docker variants.
 - `templates/simulate-request-example.json` — example payload for the
   `POST /api/v1/simulate` endpoint (earthquake).
 - `scripts/test_all_disaster_types.py` — smoke-test that POSTs every

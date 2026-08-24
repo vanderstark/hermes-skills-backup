@@ -8,6 +8,23 @@ description: Install skills into the library from a GitHub repo/URL.
 Triggers: user gives a GitHub link (or similar) and asks to "install this skill" /
 "install all the skills in this repo" / "add these skills to your library".
 
+## Critical disambiguation: "install to Hermes" vs "push to GitHub"
+
+When a user gives a GitHub URL and says "install this" / "masukkan ini" / "tambahkan
+skill ini", confirm (or infer from phrasing) whether they mean:
+- **Install into Hermes's local skill library** (`/opt/data/skills/`) so the agent can
+  use it — this is what "install skill" almost always means.
+- vs. **push/add a reference to that URL inside an unrelated GitHub repo** — a
+  completely different action (editing README, adding a citation link).
+
+These are easy to conflate when you're mid-session on GitHub repo work (e.g. pushing
+tutorial repos) — a user saying "tolong masukkan <url>" right after a repo-push
+task can get misread as "add this URL as a reference in the repo I'm pushing" instead
+of "install these skills into Hermes." If ambiguous, ask; if the user explicitly
+corrects you ("bukan di masukkan github", "maksud saya install ke hermes bukan di
+push"), that confirms "install to Hermes" was the correct reading — don't guess wrong
+twice in the same session.
+
 ## Procedure
 
 1. **Inspect before cloning.** List the repo's top-level contents (GitHub API
@@ -38,6 +55,26 @@ Triggers: user gives a GitHub link (or similar) and asks to "install this skill"
    usually the packaged/build copy of the other), install from ONE location
    only and skip the duplicate; check file counts/diff if unsure which is
    canonical (usually `.claude/skills/` or the top-level `skills/`).
+
+   **Directory name suffixes vary.** Some collections name their skill
+   folders with a `.skill` extension (e.g. `robotics-skills-suite` ships
+   `skills/*.skill` — `iso12100-risk-assessment-builder.skill/`). The
+   boundary test is still "contains SKILL.md inside", but a trailing
+   `.skill` suffix survives copying: when you flatten/copy them into the
+   library, decide up front whether to keep the suffix (so the directory
+   name stays unique and greppable) or strip it. Keep it if the same skill
+   name would collide with an existing library entry.
+
+   **Verify frontmatter `name:` matches directory name.** After copying,
+   run `grep -m1 "^name:" <dir>/SKILL.md` for each skill and compare with
+   the directory name. Mismatch means Hermes will not resolve the skill
+   correctly by name. Fix by editing `SKILL.md` frontmatter `name:` to
+   exactly match the target directory name (or rename the directory to
+   match). This caught real issues: generic names like `access` or
+   `configure` appearing multiple times in a collection (discord, imessage,
+   telegram all have `access` + `configure` sub-skills) — they must be
+   namespaced (`discord-access`, `discord-configure`, etc.) to avoid
+   collision in the flat skill namespace.
 
    **Not every repo is a skill collection at all.** Some GitHub links the
    user gives you are: (a) a bag of raw system prompts / docs with zero
@@ -87,6 +124,33 @@ Triggers: user gives a GitHub link (or similar) and asks to "install this skill"
    MCP server, API key, or CLI tool not yet configured will register fine but
    won't actually be usable until that dependency is set up. Say so — don't
    imply the skill is fully functional just because it's installed.
+
+## Pitfall: copying a cloned repo into another repo → embedded git repo (gitlink)
+
+When the destination is itself a git repo (e.g. backing the skill library up
+into `hermes-skills-backup`), copying the clone *with its `.git/` directory
+intact* turns the target into an embedded repository: `git add` records a
+**gitlink** (mode `160000`) instead of the files, and the outer commit only
+references the inner repo's HEAD. The outer clone does NOT contain the
+contents — `git status` shows the subfolder as one opaque entry and the
+files are missing for anyone who clones the backup.
+
+Symptoms: `warning: adding embedded git repository: <path>` + `create mode
+160000` lines in the commit output.
+
+Fix (do this before committing):
+```bash
+git rm --cached robotics/robotics-agent-skills   # drop the gitlink from index
+rm -rf robotics/robotics-agent-skills            # remove the embedded copy
+cp -r /opt/data/skills/robotics-agent-skills robotics/  # copy WITHOUT .git
+find robotics/ -name ".git" -type d -exec rm -rf {} +  # safety sweep
+git add robotics/
+```
+General rule: **never `cp -r` a git clone into a git repo without stripping
+its `.git` first** — strip via `rm -rf <copy>/.git`, `find ... -name .git
+-exec rm -rf`, or use `git archive` / tar with exclusion. Check the commit
+output for `160000` and for the embedded-repo warning; if either appears,
+redo the copy.
 
 ## Pitfall: duplicate/overlapping skills
 
