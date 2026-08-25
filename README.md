@@ -55,7 +55,7 @@ hermes-skills-backup/
 ## 🧠 Cara Kerja `install.sh`
 56|56|
 
-## 📚 Materi Pembelajaran Terbaru (Ditambahkan 24 Agustus 2026)
+## 📝 Skill Terbaru Ditambahkan (24 Agustus 2026)
 
 Berikut adalah materi pembelajaran yang telah disinkronisasi ke repo ini:
 
@@ -79,6 +79,27 @@ Berikut adalah materi pembelajaran yang telah disinkronisasi ke repo ini:
 - **Topik:** ATT&CK mapping, hypothesis-driven hunting, Sigma/YARA rule engineering, SIEM query design, Atomic Red Team verification, detection pipeline
 - **Deliverable:** `sigma-rules-pack-indonesian-polri.yaml` + `threat-hunt-exercise-report.pdf` + Wazuh dashboard
 - **Skill Asli:** `security/reverse-skill/threat-hunting`, `malware-analysis`, `security/pentest-tools`
+
+### 4. LLM Application Security & AI Red Teaming
+- **File:** `observations/notes/LLM_APPLICATION_SECURITY_AI_RED_TEAMING_LANJUTAN.md`
+- **Level:** Intermediates → Advanced (8–10 minggu)
+- **Topik:** OWASP LLM Top 10 + Agentic AI Top 10, Prompt injection (direct/indirect/RAG poisoning), Tool abuse, System prompt extraction, Model supply-chain risks
+- **Deliverable:** `LLM_RED_TEAM_REPORT_FINAL.pdf` + 5 canary tokens + guardrail config
+- **Skill Asli:** `security/reverse-skill/llm-security`, `security/pentest-tools`
+
+### 5. Federated Learning & Privacy-Preserving ML
+- **File:** `observations/notes/FEDERATED_LEARNING_PRIVACY_PRESERVING_ML_LANJUTAN.md`
+- **Level:** Intermediates → Advanced (10–12 minggu)
+- **Topik:** Federated Learning architecture (Flower/PySyft), Secure Aggregation, Differential Privacy (ε, δ), Split Learning, Homomorphic Encryption, Gradient inversion attack + defense
+- **Deliverable:** `FL_COMPLETION_REPORT.pdf` + cross-polsek model + DP parameters
+- **Skill Asli:** `mlops/evaluation/evaluating-llms-harness`, `mlops/huggingface-hub`, `mlops/evaluation/weights-and-biases`
+
+### 6. Advanced Kubernetes Security & Zero Trust
+- **File:** `observations/notes/ADVANCED_KUBERNETES_SECURITY_ZERO_TRUST_LANJUTAN.md`
+- **Level:** Intermediates → Advanced (10–12 minggu)
+- **Topik:** CIS K8s Benchmark hardening, Kyverno/OPA Gatekeeper policies, Istio mTLS, Zero Trust network policies, SPIFFE/SPIRE workload identity, Micro-segmentation, Vault CSI secrets
+- **Deliverable:** `K8S_ZERO_TRUST_REPORT.pdf` + mTLS mesh + SPIRE deployment + kube-bench audit
+- **Skill Asli:** `security/reverse-skill/cloud-k8s`, `security/supply-chain-security`, `security/pentest-tools`
 
 ---
 
