@@ -52,8 +52,37 @@ hermes-skills-backup/
 
 ---
 
-55|## 🧠 Cara Kerja `install.sh`
-56|
+## 🧠 Cara Kerja `install.sh`
+56|56|
+
+## 📚 Materi Pembelajaran Terbaru (Ditambahkan 24 Agustus 2026)
+
+Berikut adalah materi pembelajaran yang telah disinkronisasi ke repo ini:
+
+### 1. API Security & Penetration Testing
+- **File:** `observations/notes/API_SECURITY_PENTEST_LANJUTAN.md`
+- **Level:** Intermediates → Advanced (8–10 minggu)
+- **Topik:** OWASP API Top 10, JWT/OAuth bypass, BOLA/IDOR/BFLA, GraphQL DoS, Rate Limit bypass, CI/CD integration
+- **Deliverable:** `API_PENTEST_REPORT_FINAL.pdf` + 10 Sigma finding documents
+- **Skill Asli:** `security/api-security`, `security/pentest-tools`, `security/reverse-skill/api-security`
+
+### 2. Machine Learning Operations (Advanced)
+- **File:** `observations/notes/MLOPS_ADVANCED_LANJUTAN.md`
+- **Level:** Intermediates → Advanced (10–12 minggu)
+- **Topik:** lm-eval-harness benchmarking, W&B experiment tracking, hyperparameter sweeps, model registry, CI/CD MLOps, vLLM deployment, speculative decoding
+- **Deliverable:** `model-benchmark-report.pdf` + `sweep-report-indobert.pdf` + Indo-LLaMA-7B QA model
+- **Skill Asli:** `mlops/evaluation/evaluating-llms-harness`, `mlops/evaluation/weights-and-biases`, `mlops/inference/serving-llms-vllm`
+
+### 3. Threat Hunting & Detection Engineering
+- **File:** `observations/notes/THREAT_HUNTING_LANJUTAN.md`
+- **Level:** Intermediates → Advanced (8–10 minggu)
+- **Topik:** ATT&CK mapping, hypothesis-driven hunting, Sigma/YARA rule engineering, SIEM query design, Atomic Red Team verification, detection pipeline
+- **Deliverable:** `sigma-rules-pack-indonesian-polri.yaml` + `threat-hunt-exercise-report.pdf` + Wazuh dashboard
+- **Skill Asli:** `security/reverse-skill/threat-hunting`, `malware-analysis`, `security/pentest-tools`
+
+---
+
+## 🧠 Cara Kerja `install.sh`
 57|1. **Deteksi** `HERMES_HOME` (default `~/`)
 58|2. **Restore** `skills/` → `$HERMES_HOME/skills/`
 59|3. **Restore** `plugins/` → `$HERMES_HOME/plugins/`
