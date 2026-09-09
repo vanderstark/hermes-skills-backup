@@ -174,3 +174,56 @@ A: Skills ~114MB (34MB terkompresi) — nyaman untuk GitHub (limit file 100MB, r
 - Attribusi tetap milik masing-masing author skill
 
 Dibuat dengan ❤️ oleh Hermes untuk Bos. 🙏
+## 🛠️ MCP Office-Word-Setup (Sept 2026)
+
+**Repo Pengguna:** `vanderstark`  
+**Target Repo Terintegrasi:** `https://github.com/gongrzhe/office-word-mcp-server`  
+**Status:** ✅ Sudah dikonfigurasi di `~/.hermes/config.yaml`
+
+### 🔧 Konfigurasi yang Disimpan
+
+```yaml
+mcp_servers:
+  office_word:
+    command: "npx"
+    args: ["-y", "github:gongrzhe/office-word-mcp-server"]
+    timeout: 300
+    connect_timeout: 60
+```
+
+### 🛠️ Dependensi
+
+- `pip install mcp` (Python package)
+- `nodejs` (versi 22.x terinstall untuk `npx`)
+- `npm` untuk mengelola paket MCP
+
+### 📦 Tool MCP yang Tersedia (Setelah Restart Hermes)
+
+Setelah Hermes Agent di-restart, tools berikut akan terdaftar otomatis dengan prefix `mcp_office_word_*`:
+
+| Tool | Fungsi |
+|------|--------|
+| `mcp_office_word_read_pdf` | Mengekstrak teks dari file PDF |
+| `mcp_office_word_read_docx` | Membaca file Microsoft Word (.docx) |
+| `mcp_office_word_write_docx` | Membuat/menulis file DOCX |
+| `mcp_office_word_list_dir` | Melistrik direktori file |
+| `mcp_office_word_pptx` | Operasi pada file PowerPoint (.pptx) |
+
+### 🚀 Cara Menggunakan (Setelah Terinstall)
+
+```text
+# Contoh: Ekstrak isi PDF
+Gunakan mcp_office_word_read_pdf untuk mengekstrak isi file di /tmp/laporan.pdf
+
+# Contoh: Buat file Word baru
+Buatlah dokumen Word baru dengan isi "Hasil Analisis: ..." dan simpan ke /tmp/hasil.docx
+
+# Contoh: List file di folder
+Lisfile file di /home/bos/docs
+```
+
+### 📝 Catatan
+
+- Konfigurasi disimpan di `~/.hermes/config.yaml` (bagian `mcp_servers`).
+- File ini **sudah dimasukkan ke dalam repo backup** agar mudah di-restore saat install ulang Hermes.
+- Pastikan `npx` dan `npm` terinstal sebelum menjalankan Hermes Agent pertama kalinya.
