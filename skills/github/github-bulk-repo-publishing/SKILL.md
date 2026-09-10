@@ -31,6 +31,65 @@ need to supply a Personal Access Token directly. Expect it to arrive
 history — that's a platform fact, not something to fix retroactively.
 What IS controllable is covered in "Token hygiene" below.
 
+## Pre-flight checks (do BEFORE any repo operation)
+
+Always verify these BEFORE creating or pushing repos to avoid wasted
+iterations:
+
+1. **Check if repo already exists** — `gh repo view <owner>/<name>` returns
+   0 if found, non-zero if not. If it exists, skip creation and just
+   add it as a remote to the local folder. This avoids "Name already
+   exists on this account" errors.
+2. **Check auth method** — `gh auth status` tells you if you're logged in
+   via `gh` or just have `GITHUB_TOKEN` env var. If both exist, prefer
+   `gh` for repo creation and `GITHUB_TOKEN` embedded in git remotes
+   for push operations (more reliable for single-repo workflows).
+3. **Determine workflow shape** — single repo vs bulk loop.
+   - **Single repo**: Use `gh repo create <name> --visibility <pub|private>`
+     then `git remote add origin <url>` + push. Do NOT use
+     `--source` + `--push` unless you're sure the local repo is
+     already a git repo with commits — it fails silently if not.
+   - **Bulk (N repos)**: Use the loop template below.
+
+## Common `gh repo create` pitfalls
+
+- `--source <path>` requires the path to be a git repo with at least
+  one commit. If the folder isn't a git repo yet, `git init && git add .
+  && git commit -m "init"` first, THEN run `gh repo create`.
+- `--push` only works with `--source`. Without `--source`, `--push` is
+  silently ignored (no flag error, just no push).
+- `--origin <name>` is NOT a valid flag for `gh repo create`. Use
+  `git remote add origin` after creation instead.
+- After `gh repo create` succeeds, the new remote URL is NOT automatically
+  set. You must do: `git remote add origin https://github.com/<owner>/<name>.git`.
+- If a repo name already exists on the account, `gh repo create` fails
+  with `GraphQL: Name already exists`. Check first with `gh repo view`.
+
+## Single-repo push with embedded token (when `gh` is available)
+
+For pushing a LOCAL repo to a NEW or EXISTING GitHub repo when `gh`
+is authenticated:
+
+```bash
+# Step 1: Create the repo (or verify it exists)
+gh repo view <owner>/<name> 2>/dev/null && echo "EXISTS" || \
+  gh repo create <owner>/<name> --private
+
+# Step 2: Add remote with embedded token, push, then REVERT immediately
+TOKEN=$(gh auth token)
+cd <local-repo-dir>
+git remote add origin "https://oauth2:${TOKEN}@github.com/<owner>/<name>.git"
+git push --set-upstream origin main
+
+# Step 3: REVERT remote URL to token-free version IMMEDIATELY
+git remote set-url origin "https://github.com/<owner>/<name>.git"
+unset TOKEN
+```
+
+This pattern is SAFER than leaving the token in the remote URL because
+`git remote set-url` reverts it in the same shell session — no token
+persists in `.git/config` after the push.
+
 ## Core loop
 
 ```bash

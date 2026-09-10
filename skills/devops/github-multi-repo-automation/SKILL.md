@@ -33,6 +33,10 @@ Gunakan ketika pengguna meminta otomatisasi deployment, push, update README, ata
 - **File tidak terlihat di GitHub (browser)** → Branch lokal `master` tidak cocok dengan default branch repo (`main`). **Solusi:** Selalu rename branch lokal ke `main` sebelum push: `git branch -m main`
 - **Push "Everything up-to-date" tapi file tidak ikut** → Pastikan branch yang dipakai adalah default branch repo. Jika tidak, rename dulu ke `main` atau gunakan `git push origin <existing-branch>`
 - **Tool `write_file`/`terminal` gagal dengan "missing required field" atau "expected string, got NoneType"** → Gunakan `execute_code` + `hermes_tools.terminal/write_file` sebagai fallback yang stabil
+- **Push ditolak: `GH013: Repository rule violations found` / `GITHUB PUSH PROTECTION` / `Push cannot contain secrets`** → GitHub scan SELURUH commit yang di-push, bukan cuma commit terbaru. Token yang pernah ditulis ke file lalu di-commit (mis. contoh command di dalam `.md` dokumentasi) tetap terdeteksi walau sudah dihapus/di-redact di commit berikutnya — riwayatnya masih membawa token itu.
+  - **Solusi cepat (tanpa ubah sejarah):** buka link `unblock-secret` yang diberikan GitHub di pesan error, pilih alasan yang sesuai, lalu push ulang tanpa `--force`.
+  - **Solusi bersih (hapus dari sejarah):** jalankan `git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch <path-file-berisi-token>' --prune-empty --tag-name-filter cat -- --all`, lalu `git reflog expire --expire=now --all && git gc --prune=now --aggressive`, baru push lagi.
+  - **Cegah dari awal:** JANGAN PERNAH menulis nilai token asli ke file apa pun yang akan di-`git add`/commit — termasuk contoh command di README/dokumentasi tutorial. Tulis command dengan placeholder (`export GITHUB_TOKEN=ghp_xxx` atau `$TOKEN`), bukan token asli yang pernah dipakai di sesi ini.
 
 ## 🔄 Workflow Stabil untuk Push Otomatis (diperbarui dari sesi Polri LLM)
 

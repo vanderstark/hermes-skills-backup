@@ -274,6 +274,55 @@ differently from a plain `cp -r`:
    automatic hook execution are different requests even when one command
    nominally offers both.
 
+## Repos that are a full monorepo application with SKILL.md buried deep inside
+
+Some starred "skill" repos (e.g. a design-tool with a web app, Electron shell,
+and daemon) turn out to have 45+ top-level directories — `apps/`, `packages/`,
+`tools/`, `e2e/`, lockfiles, CI config — with the actual skill content sitting
+2-3 levels down inside just TWO of those dirs (e.g. `skills/*/SKILL.md` and
+`design-templates/*/SKILL.md`, hundreds of legitimate skills total). It is easy
+to under-react to the size and `cp -r` the ENTIRE cloned repo into the skills
+library "because it has lots of SKILL.md files in it somewhere" — this ships
+the whole application source tree (Next.js/Electron code, node/pnpm lockfiles,
+AGENTS.md/CLAUDE.md meant for THAT repo's own contributors, CI configs) into
+`$HERMES_HOME/skills/<name>/`, bloating the library with non-skill content and
+creating a stale embedded-git-repo risk if it's later copied into a backup repo
+(see the gitlink pitfall in `installing-external-skill-collections`).
+
+**Fix:** run `find <repo> -iname SKILL.md` first and look at which top-level
+dirs actually contain hits. If only 1-2 of 40+ top-level dirs contain skill
+content, copy ONLY those specific directories (e.g. `cp -r
+/tmp/<repo>/skills /opt/data/skills/<name>/` and `cp -r
+/tmp/<repo>/design-templates /opt/data/skills/<name>-templates/` as separate,
+correctly-scoped copies) — never the repo root. Do not carry over the source
+repo's own `AGENTS.md`/`CLAUDE.md`/`CONTRIBUTING.md`/lockfiles/`apps/`/
+`packages/`/`tools/`/`e2e/` — those are that project's own contributor docs
+and build tooling, not skill content for Hermes.
+
+## Wrapper SKILL.md for repos with no SKILL.md that are actually a daemon/proxy
+
+When a repo has zero `SKILL.md` files (see "Zero-SKILL.md repos" above) AND
+matches the "Active daemon / auto-mutating skill system" pattern (an installer
+that starts a persistent proxy/daemon which can rewrite the skill library on
+its own, e.g. a "collective skill evolution" tool), writing a wrapper SKILL.md
+to document it is fine — but the wrapper itself MUST open with an explicit
+warning section before any install/usage instructions, something like:
+
+```markdown
+## ⚠️ Before You Start This
+
+This tool runs a background daemon/proxy that can auto-rewrite this agent's
+own skill library without per-change review, and may route conversation
+traffic through a third-party proxy. Confirm with the user before running
+the `start --daemon` step below — do not run it automatically just because
+this SKILL.md exists.
+```
+
+Documenting the install steps is not the same as recommending the user run
+them unattended; the wrapper's job is to make the daemon nature visible to
+whoever reads the skill next, not to make it look like an ordinary static
+skill install.
+
 ## Consolidating same-named skills already installed side-by-side
 
 When two skill collections installed in *different* sessions turn out to share
