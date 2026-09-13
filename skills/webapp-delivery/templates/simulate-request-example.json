@@ -1,0 +1,13 @@
+{
+  "disaster_type": "earthquake",
+  "location": "Cianjur",
+  "lat": -6.82,
+  "lon": 107.14,
+  "population": 750000,
+  "area_km2": 120,
+  "infrastructure_density": 0.7,
+  "earthquake_magnitude": 5.6,
+  "earthquake_depth_km": 10,
+  "epicenter_distance_km": 5,
+  "scenario_preset": null
+}
